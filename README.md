@@ -1,16 +1,33 @@
-# fintrack
+📊 FinTrack — Personal Finance & Expense Tracker
 
-A new Flutter project.
+FinTrack is a modern personal finance and expense tracking app created with Flutter. It helps users track daily spending, analyze expenses, and manage finances. The app features a clean user interface and works offline.
 
-## Getting Started
+🧱 Tech Stack
 
-This project is a starting point for a Flutter application.
+- Flutter
 
-A few resources to get you started if this is your first Flutter project:
+- Provider (State Management)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- SQLite (sqflite) — Offline Storage
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- GoRouter — Navigation
+
+- FL Chart — Analytics & Charts
+
+- Material 3 UI
+
+- Clean Architecture
+
+✨ Features
+
+- 💰 Add, edit & delete expenses
+
+- 🗃 Offline-first local storage with SQLite
+
+- 📊 Expense analytics & charts
+
+- 🧭 Clean & scalable architecture
+
+- 🌙 Light / Dark mode ready
+
+- 🧱 Separation of concerns (UI, Provider, Data, Services)
