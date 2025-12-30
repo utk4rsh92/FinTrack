@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,8 +37,19 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           );
 
           context.read<ExpenseProvider>().addExpense(expense);
-          Navigator.pop(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+          });
         },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xffdb8743),
+           // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            textStyle: const TextStyle(
+                fontSize: 10,
+                color: Colors.white
+                //fontWeight: FontWeight.bold
+            )
+        ),
         child: const Text('Save'),
       )
       ],

@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
 
-class DashboardScreens extends StatelessWidget {
+class DashboardScreens extends StatefulWidget {
   const DashboardScreens({super.key});
+
+  @override
+  State<DashboardScreens> createState() => _DashboardScreensState();
+}
+
+class _DashboardScreensState extends State<DashboardScreens> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() =>
+        context.read<ExpenseProvider>().loadExpenses());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +28,9 @@ class DashboardScreens extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('FinTrack')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/add'),
+        backgroundColor: const Color(0xffdb8743),
+        onPressed: () => context.push('/add'),
+
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -26,13 +43,22 @@ class DashboardScreens extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: expenses.length,
+              separatorBuilder: (_, __) => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(
+                  color: Color(0xffacaaaf),
+                  thickness: 0.4,
+                  height: 0,
+                ),
+              ),
               itemBuilder: (context, index) {
                 final e = expenses[index];
+                final formattedTime = DateFormat('dd MMM, hh:mm a').format(e.time);
                 return ListTile(
-                  title: Text(e.title),
-                  subtitle: Text('${e.category} • ${e.time.toLocal()}'),
+                  title: Text(e.title.toUpperCase()),
+                  subtitle: Text('${e.category} • $formattedTime'),
                   trailing: Text('₹${e.amount}'),
                 );
               },
@@ -43,3 +69,4 @@ class DashboardScreens extends StatelessWidget {
     );
   }
 }
+

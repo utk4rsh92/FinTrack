@@ -1,14 +1,35 @@
 
 import 'package:fintrack/ui/screens/add_expense_screen.dart';
 import 'package:fintrack/ui/screens/dashboard_screens.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
+// final appRouter = GoRouter(
+//    initialLocation: '/',
+//    routes: [
+//      GoRoute(path: '/',
+//      builder: (context,state)=>const DashboardScreens() ),
+//      GoRoute(path: '/add',
+//      builder: (context,state)=>const AddExpenseScreen() ),
+//    ],
+// );
+
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final appRouter = GoRouter(
-   initialLocation: '/',
-   routes: [
-     GoRoute(path: '/',
-     builder: (context,state)=>const DashboardScreens() ),
-     GoRoute(path: '/add',
-     builder: (context,state)=>const AddExpenseScreen() ),
-   ],
+  navigatorKey: _rootNavigatorKey,
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const DashboardScreens(),
+      routes: [
+        GoRoute(
+          path: 'add',
+          builder: (context, state) => const AddExpenseScreen(),
+        ),
+      ],
+    ),
+  ],
 );
