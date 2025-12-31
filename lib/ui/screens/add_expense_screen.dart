@@ -15,7 +15,7 @@ class AddExpenseScreen extends StatefulWidget {
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final title = TextEditingController();
   final amount = TextEditingController();
-  String category = '';
+  String category = 'Food';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +26,28 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           TextField(controller: title, decoration: const InputDecoration(labelText: 'Title')),
       TextField(controller: amount, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Amount')),
       const SizedBox(height: 12),
+
+            DropdownButtonFormField<String>(
+              value: category,
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                border: OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(value: 'Food', child: Text('Food')),
+                DropdownMenuItem(value: 'Travel', child: Text('Travel')),
+                DropdownMenuItem(value: 'Bills', child: Text('Bills')),
+                DropdownMenuItem(value: 'Shopping', child: Text('Shopping')),
+                DropdownMenuItem(value: 'Other', child: Text('Other')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  category = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
       ElevatedButton(
         onPressed: () {
           final expense = Expense(
