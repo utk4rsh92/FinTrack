@@ -11,17 +11,16 @@ void main() {
   runApp(const FinTrackApp());
 }
 
-
 class FinTrackApp extends StatelessWidget {
   const FinTrackApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers:
-    [
-      ChangeNotifierProvider(create: (_)=>ExpenseProvider()),
-      ChangeNotifierProvider(create: (_)=> ThemeProvider()),
-    ],
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
       child: Consumer<ThemeProvider>(
         builder: (_, theme, __) {
           return MaterialApp.router(

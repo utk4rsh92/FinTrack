@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../widgets/edit_expense.dart';
 
 class DashboardScreens extends StatefulWidget {
   const DashboardScreens({super.key});
@@ -31,14 +32,13 @@ class _DashboardScreensState extends State<DashboardScreens> {
       appBar: AppBar(title:  Text('FinTrack', style: GoogleFonts.raleway()),
         actions: [
           IconButton(
-            icon: Icon(
-              context.watch<ThemeProvider>().isDark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () =>
-                context.read<ThemeProvider>().toggleTheme(),
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () {
+              final theme = context.read<ThemeProvider>();
+              theme.toggleTheme();
+            },
           ),
+
           IconButton(
             icon: const Icon(Icons.pie_chart),
             onPressed: () => context.push('/analytics'),
@@ -74,12 +74,72 @@ class _DashboardScreensState extends State<DashboardScreens> {
               itemBuilder: (context, index) {
                 final e = expenses[index];
                 final formattedTime = DateFormat('dd MMM, hh:mm a').format(e.time);
-                return ListTile(
-                  title: Text(e.title.toUpperCase()),
-                  subtitle: Text('${e.category} • $formattedTime'),
-                  trailing: Text('₹${e.amount}'),
+
+                 return Dismissible(
+                  key: ValueKey(e.id),
+                  direction: DismissDirection.horizontal,
+
+                  background: Container(
+                    color: Colors.green,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: const Icon(Icons.edit, color: Colors.white),
+                  ),
+
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.startToEnd) {
+                      // Swipe ➡️ Edit
+                   //   Navigator.of(context).pushNamed('/edit', arguments: e);
+                      showEditDialog(context, e);
+
+                      // Return false so the item stays in the list
+                      return false;
+                    }
+
+                    // Swipe ⬅️ Delete
+                    final shouldDelete = await showDialog<bool>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text('Delete Expense'),
+                        content: const Text('Are you sure you want to delete this expense?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    return shouldDelete ?? false;
+                  },
+
+                  onDismissed: (direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      await context.read<ExpenseProvider>().deleteExpense(e.id);
+                    }
+                  },
+
+                  child: ListTile(
+                    title: Text(e.title.toUpperCase()),
+                    subtitle: Text('${e.category} • $formattedTime'),
+                    trailing: Text('₹${e.amount}'),
+                  ),
                 );
+
               },
+
             ),
           )
         ],

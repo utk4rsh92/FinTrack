@@ -53,6 +53,40 @@ class ExpenseProvider extends ChangeNotifier{
   }
 
 
+  Future<void> deleteExpense(String id) async {
+    final db = await dbService.database;
+
+    await db.delete(
+      'expenses',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    _expenses.removeWhere((e) => e.id == id);
+    notifyListeners();
+  }
+
+  Future<void> updateExpense(Expense updated) async {
+    final db = await dbService.database;
+
+    await db.update(
+      'expenses',
+      {
+        'title': updated.title,
+        'amount': updated.amount,
+        'category': updated.category,
+      },
+      where: 'id = ?',
+      whereArgs: [updated.id],
+    );
+
+    final index = _expenses.indexWhere((e) => e.id == updated.id);
+    if (index != -1) {
+      _expenses[index] = updated;
+      notifyListeners();
+    }
+  }
+
 
 
 }
