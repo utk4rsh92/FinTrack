@@ -1,5 +1,7 @@
+import 'package:fintrack/ui/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -48,33 +50,43 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             ),
 
             const SizedBox(height: 16),
-      ElevatedButton(
-        onPressed: () {
-          final expense = Expense(
-            id: const Uuid().v4(),
-            title: title.text,
-            amount: double.parse(amount.text),
-            category: category,
-            time: DateTime.now(),
-          );
+            SizedBox(
+              width: double.infinity,   // full width
+              height: 45,               // ideal material button height
+              child: ElevatedButton(
+                onPressed: () {
+                  final expense = Expense(
+                    id: const Uuid().v4(),
+                    title: title.text,
+                    amount: double.parse(amount.text),
+                    category: category,
+                    time: DateTime.now(),
+                  );
 
-          context.read<ExpenseProvider>().addExpense(expense);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pop();
-          });
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xffdb8743),
-           // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            textStyle: const TextStyle(
-                fontSize: 10,
-                color: Colors.white
-                //fontWeight: FontWeight.bold
+                  context.read<ExpenseProvider>().addExpense(expense);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(context).pop();
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child:  Text(
+                  'Save',
+                  style: GoogleFonts.raleway(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             )
-        ),
-        child: const Text('Save'),
-      )
-      ],
+
+          ],
     ),
     ),
     );

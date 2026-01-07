@@ -1,3 +1,4 @@
+import 'package:fintrack/ui/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +17,7 @@ class DashboardScreens extends StatefulWidget {
 }
 
 class _DashboardScreensState extends State<DashboardScreens> {
+  DateTime selectedMonth = DateTime.now();
 
   @override
   void initState() {
@@ -26,10 +28,15 @@ class _DashboardScreensState extends State<DashboardScreens> {
 
   @override
   Widget build(BuildContext context) {
-    final expenses = context.watch<ExpenseProvider>().expenses;
-    final total = context.watch<ExpenseProvider>().totalAmount;
+    final allExpenses = context.watch<ExpenseProvider>().expenses;
+    final expenses = allExpenses.where((e) =>
+    e.time.year == selectedMonth.year &&
+        e.time.month == selectedMonth.month
+    ).toList();
+    final total = expenses.fold(0.0, (sum, e) => sum + e.amount);
     return Scaffold(
       appBar: AppBar(title:  Text('FinTrack', style: GoogleFonts.raleway()),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
@@ -47,19 +54,74 @@ class _DashboardScreensState extends State<DashboardScreens> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xffdb8743),
+        backgroundColor:  AppColors.primary,
         onPressed: () => context.push('/add'),
         child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.chevron_left),
+                onPressed: () {
+                  setState(() {
+                    selectedMonth = DateTime(
+                      selectedMonth.year,
+                      selectedMonth.month - 1,
+                    );
+                  });
+                },
+              ),
+
+              Text(
+                DateFormat('MMMM yyyy').format(selectedMonth),
+                style: GoogleFonts.raleway(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              IconButton(
+                icon: const Icon(Icons.chevron_right),
+                onPressed: () {
+                  setState(() {
+                    selectedMonth = DateTime(
+                      selectedMonth.year,
+                      selectedMonth.month + 1,
+                    );
+                  });
+                },
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              'Total Spent: ₹${total.toStringAsFixed(2)}',
-               style: GoogleFonts.raleway(fontWeight: FontWeight.bold,fontSize: 22),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Total Spent\n',
+                    style: GoogleFonts.rubik(
+                      fontSize: 13,
+                      color: Theme.of(context).textTheme.bodySmall!.color,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '₹${total.toStringAsFixed(2)}',
+                    style: GoogleFonts.rubik(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+
           Expanded(
             child: ListView.separated(
               itemCount: expenses.length,
